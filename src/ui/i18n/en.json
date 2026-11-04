@@ -52,6 +52,7 @@
   "world.locked": "Finish 4 levels to open",
   "game.blowToStart": "Blow to fly!",
   "game.tapToStart": "Tap and hold to fly!",
+  "game.blowOrTapToStart": "Blow, or tap and hold to fly!",
   "game.tryAgain": "Let's try again!",
   "game.rotate": "Rotate for a bigger view",
   "game.restBreak": "Take a breather!",

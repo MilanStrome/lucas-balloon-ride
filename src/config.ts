@@ -37,6 +37,9 @@ export const CALIBRATION = {
   minCandidateFrames: 6,
   maxFailuresBeforeFallback: 3,
   floorShiftSuggestDb: 10,
+  /** Auto (no-screen) calibration never sets the floor above this, so a blow during the
+   *  short room measurement cannot hide later blows. */
+  autoFloorMaxDb: -42,
 } as const;
 
 export const PHYSICS = {

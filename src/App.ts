@@ -3,9 +3,9 @@ import { InputManager } from './audio/InputManager';
 import { MicInput, MicStartError, type MicError } from './audio/MicInput';
 import { Music, type TrackId } from './audio/Music';
 import { Sfx } from './audio/Sfx';
-import { QuickFloor, shouldSuggestRecalibration } from './audio/Calibration';
+import { QuickFloor, rebaseCalibration, shouldSuggestRecalibration } from './audio/Calibration';
 import type { CalibrationValues } from './audio/BreathDetector';
-import { RENDER } from './config';
+import { CALIBRATION, DETECTOR, RENDER } from './config';
 import { CharacterRegistry } from './game/Characters';
 import {
   applyPending,
@@ -138,7 +138,13 @@ export class App {
       this.quickFloor.feed(this.input.features, now);
       if (this.quickFloor.done) {
         const cal = this.input.detector.getCalibration();
-        this.suggestRecalibrate = shouldSuggestRecalibration(cal, this.quickFloor.floor);
+        if (this.autoCalibrate) {
+          this.autoCalibrate = false;
+          const floor = Math.min(this.quickFloor.floor, CALIBRATION.autoFloorMaxDb);
+          this.input.setCalibration(rebaseCalibration(cal, floor));
+        } else {
+          this.suggestRecalibrate = shouldSuggestRecalibration(cal, this.quickFloor.floor);
+        }
         this.quickFloor = null;
       }
     }
@@ -279,8 +285,9 @@ export class App {
   }
 
   /**
-   * "Try another way": play with tap & hold instead of the mic. Still a user gesture, so the
-   * AudioContext is created here for music and sound effects.
+   * "Try another way": adds tap & hold. Blowing keeps working too: the mic is started quietly
+   * in the background, and if it is denied or missing the game just carries on with tap only
+   * (no Mic Help screen). Still a user gesture, so the AudioContext is created here.
    */
   async playAnotherWay(): Promise<void> {
     try {
@@ -296,6 +303,39 @@ export class App {
     this.applySettings();
     await this.loadUi();
     this.toProfiles();
+    void this.startMicQuietly();
+  }
+
+  /** True while an automatic (no-screen) calibration is pending for this mic. */
+  private autoCalibrate = false;
+
+  /** Start the mic without any screens; failures are silent (tap & hold still works). */
+  async startMicQuietly(): Promise<void> {
+    if (this.micState === 'on' || this.micState === 'starting') return;
+    this.micState = 'starting';
+    try {
+      if (this.beforeMic && !(await this.beforeMic())) throw new MicStartError('denied', 'denied');
+      await this.mic.start(this.store.data.settings.deviceId);
+      this.micState = 'on';
+      this.micError = null;
+      const cal =
+        this.testConfig.calibration ??
+        this.store.getCalibration(this.mic.deviceId, this.store.data.activeProfileId);
+      if (cal) {
+        this.input.setCalibration(cal);
+      } else {
+        // No calibration yet: measure the room for a moment and set the floor from it.
+        this.input.setCalibration({
+          noiseFloorDb: DETECTOR.defaultNoiseFloorDb,
+          maxBlowDb: DETECTOR.defaultMaxBlowDb,
+        });
+        this.autoCalibrate = true;
+      }
+      this.quickFloor = new QuickFloor();
+    } catch (e) {
+      this.micState = 'error';
+      this.micError = e instanceof MicStartError ? e.kind : 'other';
+    }
   }
 
   /** Native hook (Capacitor): request RECORD_AUDIO before getUserMedia. */
