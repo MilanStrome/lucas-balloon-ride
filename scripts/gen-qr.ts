@@ -10,7 +10,7 @@ const args = process.argv.slice(2);
 const hostIdx = args.indexOf('--host');
 const host =
   (hostIdx >= 0 ? args[hostIdx + 1] : process.env['LBR_HOST']) ??
-  'https://rvappstudios.github.io/lucas-balloon-ride/';
+  'https://milanstrome.github.io/lucas-balloon-ride/';
 const base = host.endsWith('/') ? host : `${host}/`;
 const table = JSON.parse(
   readFileSync(join(root, 'src', 'game', 'unlocks.json'), 'utf8'),

@@ -29,7 +29,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="rvappstudios.github.io" android:pathPrefix="/lucas-balloon-ride" />
+                <data android:scheme="https" android:host="milanstrome.github.io" android:pathPrefix="/lucas-balloon-ride" />
             </intent-filter>
 
         </activity>
