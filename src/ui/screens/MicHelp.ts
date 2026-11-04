@@ -3,7 +3,6 @@ import type { App } from '../../App';
 import { MicInput } from '../../audio/MicInput';
 import { button, h } from '../dom';
 import { t } from '../i18n';
-import { parentalGate } from '../ParentalGate';
 import type { Screen } from '../Router';
 import { isLaptop, makeScreen, micHintSvg } from './common';
 
@@ -38,16 +37,13 @@ export function micHelpScreen(app: App): Screen {
         },
       ),
       button(
-        { icon: 'lock', label: t('mic.help.fallback'), cls: 'secondary', testId: 'mic-fallback' },
+        { icon: 'person', label: t('mic.help.fallback'), cls: 'secondary', testId: 'mic-fallback' },
         () => {
-          void parentalGate(s.el).then((ok) => {
-            if (!ok) return;
-            app.store.update((d) => {
-              d.settings.tapMode = true;
-            });
-            app.applySettings();
-            app.toProfiles();
+          app.store.update((d) => {
+            d.settings.tapMode = true;
           });
+          app.applySettings();
+          app.toProfiles();
         },
       ),
     ),

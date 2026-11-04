@@ -12,7 +12,7 @@ import {
 } from './helpers';
 
 test.describe('mic denied', () => {
-  test('denied → Mic Help screen; the fallback sits behind the parental gate', async ({ page }) => {
+  test('denied → Mic Help screen; "Try another way" switches to tap & hold', async ({ page }) => {
     await page.addInitScript(() => {
       navigator.mediaDevices.getUserMedia = () =>
         Promise.reject(new DOMException('denied', 'NotAllowedError'));
@@ -22,14 +22,7 @@ test.describe('mic denied', () => {
     await expect(page.getByTestId('screen-mic-help')).toBeVisible();
     await expect(page.getByTestId('mic-help-reason')).toContainText('turned off');
     await page.getByTestId('mic-fallback').click();
-    await expect(page.getByTestId('parental-gate')).toBeVisible();
-    await page.getByTestId('gate-cancel').click();
     await expect(page.getByTestId('parental-gate')).toHaveCount(0);
-    await expect(page.getByTestId('screen-mic-help')).toBeVisible();
-    await page.waitForTimeout(600); // double-tap guard
-    // A grown-up passes the gate: tap/hold mode is enabled and play continues without a mic.
-    await page.getByTestId('mic-fallback').click();
-    await passGate(page);
     await expect(page.getByTestId('screen-profile-create')).toBeVisible();
     const save = await lbr<{ settings: { tapMode: boolean } }>(page, 's.save');
     expect(save.settings.tapMode).toBe(true);
@@ -167,9 +160,10 @@ test.describe('gates & rapid taps', () => {
     await page.getByTestId('menu-settings').click();
     await expect(page.getByTestId('parental-gate')).toBeVisible();
     await expect(page.getByTestId('screen-settings')).toHaveCount(0);
-    // A short tap on the hold button does not open it.
-    await page.getByTestId('gate-hold').click();
-    await expect(page.getByTestId('gate-question')).toBeHidden();
+    // Math only: no hold button, a question with three answers.
+    await expect(page.getByTestId('gate-hold')).toHaveCount(0);
+    await expect(page.getByTestId('gate-question')).toContainText('+');
+    await expect(page.locator('[data-testid^="gate-answer-"]')).toHaveCount(3);
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('parental-gate')).toHaveCount(0);
     await page.waitForTimeout(600); // double-tap guard
@@ -177,6 +171,21 @@ test.describe('gates & rapid taps', () => {
     await passGate(page);
     await expect(page.getByTestId('screen-settings')).toBeVisible();
     await expect(page.getByText('never recorded')).toBeVisible();
+  });
+
+  test('a wrong answer closes the gate without opening Settings', async ({ page }) => {
+    await seed(page, { testConfig: { calibration: TEST_CAL }, save: profileSave() });
+    await toMenu(page);
+    await page.getByTestId('menu-settings').click();
+    const q = await page.getByTestId('gate-question').textContent();
+    const m = /(\d+)\s*\+\s*(\d+)/.exec(q ?? '');
+    const right = Number(m?.[1]) + Number(m?.[2]);
+    const wrong = page
+      .locator(`[data-testid^="gate-answer-"]:not([data-testid="gate-answer-${right}"])`)
+      .first();
+    await wrong.click();
+    await expect(page.getByTestId('parental-gate')).toHaveCount(0);
+    await expect(page.getByTestId('screen-menu')).toBeVisible();
   });
 
   test('double-taps never open duplicate screens', async ({ page }) => {

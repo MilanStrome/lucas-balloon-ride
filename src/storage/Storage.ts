@@ -108,6 +108,7 @@ function sanitizeSettings(v: unknown): Settings {
     colorblind: bool(v['colorblind'], d.colorblind),
     reduceMotion: oneOf(v['reduceMotion'], ['auto', 'on', 'off'] as const, d.reduceMotion),
     calmMusic: bool(v['calmMusic'], d.calmMusic),
+    unlockAll: bool(v['unlockAll'], d.unlockAll),
   };
 }
 

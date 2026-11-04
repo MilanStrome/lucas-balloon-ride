@@ -22,7 +22,7 @@ export function worldMapScreen(app: App): Screen {
   const render = () => {
     grid.replaceChildren();
     for (let w = 1; w <= WORLDS; w++) {
-      const unlocked = isWorldUnlocked(app.p, w);
+      const unlocked = isWorldUnlocked(app.p, w, app.store.data.settings.unlockAll);
       const done = completedInWorld(app.p, w);
       const b = h(
         'button',
@@ -61,7 +61,7 @@ export function levelSelectScreen(app: App, world: number): Screen {
     row.replaceChildren();
     for (let l = 1; l <= LEVELS_PER_WORLD; l++) {
       const id = levelId(world, l);
-      const unlocked = isLevelUnlocked(app.p, id);
+      const unlocked = isLevelUnlocked(app.p, id, app.store.data.settings.unlockAll);
       const stars = app.p.stars[id] ?? 0;
       const starRow = h('span', { class: 'row', 'aria-hidden': 'true' });
       for (let i = 0; i < 3; i++)

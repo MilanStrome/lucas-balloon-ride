@@ -156,6 +156,11 @@ describe('sanitize', () => {
     expect(s.daily['y']).toBeUndefined();
   });
 
+  it('unlock-all defaults to on (also for older saves) and keeps an explicit off', () => {
+    expect(sanitize({}).settings.unlockAll).toBe(true);
+    expect(sanitize({ settings: { unlockAll: false } }).settings.unlockAll).toBe(false);
+  });
+
   it('keeps at most 4 profiles', () => {
     const profiles = Array.from({ length: 6 }, (_, i) => newProfile(`p${i}`, 'bear', '', 0));
     expect(sanitize({ profiles }).profiles).toHaveLength(STORAGE.maxProfiles);

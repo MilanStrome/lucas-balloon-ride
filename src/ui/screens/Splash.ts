@@ -26,13 +26,26 @@ export function splashScreen(app: App): Screen {
     app.onSplashTap();
   };
   go.addEventListener('click', start);
+  const another = h(
+    'button',
+    { class: 'btn secondary', type: 'button', 'data-testid': 'try-another-way' },
+    icon('person'),
+    h('span', { text: t('splash.another') }),
+  );
+  another.addEventListener('click', () => {
+    if (tapped) return;
+    tapped = true;
+    go.disabled = true;
+    another.disabled = true;
+    void app.playAnotherWay();
+  });
   s.el.addEventListener('click', (e) => {
     if (e.target === s.el) start();
   });
   s.el.append(
     h('h1', { text: t('app.title') }),
     art,
-    go,
+    h('div', { class: 'row' }, go, another),
     h('p', { class: 'text' }, icon('mic'), ' ', t('splash.micNote')),
     asking,
     h('p', { class: 'text', style: 'font-size:15px;color:var(--ink-soft)', text: t('app.brand') }),

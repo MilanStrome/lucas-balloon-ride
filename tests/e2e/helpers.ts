@@ -151,16 +151,9 @@ export async function startLevel(page: Page, id: string): Promise<void> {
   await expect(page.getByTestId('game-canvas')).toBeVisible();
 }
 
-/** Pass the parental gate (hold 3 s, then answer the sum). */
+/** Pass the parental gate (answer the sum). */
 export async function passGate(page: Page): Promise<void> {
-  const hold = page.getByTestId('gate-hold');
-  await expect(hold).toBeVisible();
-  const box = await hold.boundingBox();
-  if (!box) throw new Error('no gate button');
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await page.mouse.down();
-  await page.waitForTimeout(3300);
-  await page.mouse.up();
+  await expect(page.getByTestId('parental-gate')).toBeVisible();
   const q = await page.getByTestId('gate-question').textContent();
   const m = /(\d+)\s*\+\s*(\d+)/.exec(q ?? '');
   if (!m) throw new Error(`bad question: ${q}`);

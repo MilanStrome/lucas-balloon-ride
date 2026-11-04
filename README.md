@@ -10,6 +10,13 @@ _measured_ (loudness and frequency shape); audio is never recorded, stored or tr
 - Spec: [GAME_SPEC.md](GAME_SPEC.md) · judgment calls: [DECISIONS.md](DECISIONS.md) ·
   asset sources: [ASSETS.md](ASSETS.md) · device QA: [QA_CHECKLIST.md](QA_CHECKLIST.md)
 
+## Options for grown-ups
+
+Settings (behind a simple math question) include **Unlock all levels** (on by default; turn it
+off to unlock each level by finishing the one before, and the next world after 4 of 5) and
+**Tap / hold to fly**. Kids can also pick **Try another way** on the start screen to play with
+tap & hold instead of blowing.
+
 ## Install
 
 Requires Node 24+ (tested with 24.12) and npm 11.

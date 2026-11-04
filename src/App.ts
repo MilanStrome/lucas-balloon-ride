@@ -278,6 +278,26 @@ export class App {
     void this.startMic();
   }
 
+  /**
+   * "Try another way": play with tap & hold instead of the mic. Still a user gesture, so the
+   * AudioContext is created here for music and sound effects.
+   */
+  async playAnotherWay(): Promise<void> {
+    try {
+      this.mic.ensureContext();
+    } catch {
+      // No Web Audio: play silently.
+    }
+    this.music.play('menu');
+    void this.characters.load(import.meta.env.BASE_URL);
+    this.store.update((d) => {
+      d.settings.tapMode = true;
+    });
+    this.applySettings();
+    await this.loadUi();
+    this.toProfiles();
+  }
+
   /** Native hook (Capacitor): request RECORD_AUDIO before getUserMedia. */
   beforeMic: (() => Promise<boolean>) | null = null;
 

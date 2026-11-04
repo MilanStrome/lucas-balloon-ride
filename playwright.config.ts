@@ -10,7 +10,8 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 15_000 },
   fullyParallel: true,
-  workers: 3,
+  // Each fake-mic test starts its own browser; keep memory modest on 8 GB machines.
+  workers: process.env['CI'] ? 3 : 2,
   retries: 0,
   updateSnapshots: 'missing',
   snapshotPathTemplate: '{testDir}/__screenshots__/{platform}/{projectName}/{arg}{ext}',

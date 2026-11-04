@@ -15,7 +15,10 @@ test('complete level 1-1 with a scripted intensity sequence → results → prog
   page,
 }) => {
   test.setTimeout(150_000);
-  await seed(page, { testConfig: { calibration: TEST_CAL }, save: profileSave() });
+  await seed(page, {
+    testConfig: { calibration: TEST_CAL },
+    save: profileSave({}, { unlockAll: false }),
+  });
   await toMenu(page);
   await startLevel(page, '1-1');
   const level = world1.levels[0]!;

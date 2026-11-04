@@ -560,19 +560,6 @@ input[type='text'] {
   background: #56648a;
 }
 
-.hold-btn {
-  position: relative;
-  overflow: hidden;
-}
-.hold-btn .fill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  background: rgba(255, 255, 255, 0.35);
-}
-
 .podium {
   display: flex;
   align-items: flex-end;

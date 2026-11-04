@@ -23,6 +23,8 @@ export interface Settings {
   colorblind: boolean;
   reduceMotion: Tri;
   calmMusic: boolean;
+  /** Every Adventure world and level open from the start. */
+  unlockAll: boolean;
 }
 
 export interface CalibrationRecord {
@@ -91,6 +93,7 @@ export function defaultSettings(): Settings {
     colorblind: false,
     reduceMotion: 'auto',
     calmMusic: false,
+    unlockAll: true,
   };
 }
 

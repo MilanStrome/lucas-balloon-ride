@@ -59,15 +59,13 @@ test('Party: 3 players complete turns → podium shows the correct order', async
   }
   await expect(page.getByTestId('podium')).toBeVisible({ timeout: 30_000 });
   await setIntensity(page, null);
-  const places = await page
-    .locator('[data-testid^="podium-"][data-place]')
-    .evaluateAll((els) =>
-      els.map((e) => ({
-        place: Number(e.getAttribute('data-place')),
-        player: Number(e.getAttribute('data-player')),
-        text: e.textContent ?? '',
-      })),
-    );
+  const places = await page.locator('[data-testid^="podium-"][data-place]').evaluateAll((els) =>
+    els.map((e) => ({
+      place: Number(e.getAttribute('data-place')),
+      player: Number(e.getAttribute('data-player')),
+      text: e.textContent ?? '',
+    })),
+  );
   expect(places).toHaveLength(3);
   const dist = places.map((p) => Number(/(\d+) m/.exec(p.text)?.[1] ?? -1));
   // Sorted by distance, ties share a place, and the player who stopped blowing is last.

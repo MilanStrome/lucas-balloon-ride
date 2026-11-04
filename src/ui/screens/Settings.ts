@@ -24,7 +24,7 @@ export function settingsScreen(app: App): Screen {
   };
   const row = (label: string, control: HTMLElement) =>
     h('div', { class: 'setting' }, h('span', { text: label }), control);
-  const toggle = (key: BoolKey, label: string, gated = false) => {
+  const toggle = (key: BoolKey, label: string) => {
     const b = button(
       { label: '', cls: 'toggle small', testId: `toggle-${key}`, ariaLabel: label },
       () => {
@@ -34,10 +34,10 @@ export function settingsScreen(app: App): Screen {
             st[key] = next;
           });
           sync();
+          // Back to breath after "Try another way": switch the mic on.
+          if (key === 'tapMode' && !next && app.micState !== 'on') void app.startMic();
         };
-        // Turning a fallback ON needs the gate again (fallbacks change how the game is played).
-        if (gated && next) void parentalGate(s.el).then((ok) => ok && apply());
-        else apply();
+        apply();
       },
     );
     const sync = () => {
@@ -236,8 +236,9 @@ export function settingsScreen(app: App): Screen {
     sec(
       t('settings.access'),
       toggle('easyMode', t('settings.easy')),
-      toggle('humMode', t('settings.hum'), true),
-      toggle('tapMode', t('settings.tap'), true),
+      toggle('humMode', t('settings.hum')),
+      toggle('tapMode', t('settings.tap')),
+      toggle('unlockAll', t('settings.unlockAll')),
       toggle('restBreaks', t('settings.rest')),
       toggle('colorblind', t('settings.colorblind')),
       select(

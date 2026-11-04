@@ -63,6 +63,19 @@ describe('unlocks', () => {
   });
 });
 
+describe('unlock all levels (setting, on by default)', () => {
+  it('opens every world and level but still records real progress', () => {
+    const p = fresh();
+    expect(isWorldUnlocked(p, 6, true)).toBe(true);
+    expect(isLevelUnlocked(p, '6-5', true)).toBe(true);
+    expect(isLevelUnlocked(p, '3-9', true)).toBe(false);
+    expect(isWorldUnlocked(p, 7, true)).toBe(false);
+    expect(isLevelUnlocked(p, '6-5')).toBe(false);
+    // Daily mechanics follow real progress, not the setting.
+    expect(unlockedWorldCount(p)).toBe(1);
+  });
+});
+
 describe('rewards', () => {
   it('coin math and no double reward for the same run', () => {
     const p = fresh();

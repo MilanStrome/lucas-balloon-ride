@@ -126,12 +126,12 @@ safest kid-friendly option was chosen.
 
 ## Late changes from the verify loop
 
-| Decision | Why |
-|---|---|
-| Playwright uses one web server (`scripts/e2e-server.ts`) that builds the e2e and production bundles one after the other, then serves both (4173 / 4174) | Two Vite builds started in parallel by Playwright crashed on Windows (exit 0xC0000005). |
-| The perf test runs in its own Playwright project that depends on the others, so it runs alone | Sharing the CPU with other test browsers produced a 346 ms stall and 46.9 fps; alone: 59.4 fps, no long tasks. |
-| Endless pre-generates the next chunk in `requestIdleCallback`, not inside the fixed update | Chunk generation is ~2 ms (9 ms worst); keeping it out of the game step avoids hitches on slow phones. |
-| The rest-break card ignores blow-to-continue for 10 s; the calibration screen allows Back when opened from Settings | Found in the self-review: a child still blowing skipped the break instantly; parents could not back out of recalibration. |
+| Decision                                                                                                                                                | Why                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Playwright uses one web server (`scripts/e2e-server.ts`) that builds the e2e and production bundles one after the other, then serves both (4173 / 4174) | Two Vite builds started in parallel by Playwright crashed on Windows (exit 0xC0000005).                                   |
+| The perf test runs in its own Playwright project that depends on the others, so it runs alone                                                           | Sharing the CPU with other test browsers produced a 346 ms stall and 46.9 fps; alone: 59.4 fps, no long tasks.            |
+| Endless pre-generates the next chunk in `requestIdleCallback`, not inside the fixed update                                                              | Chunk generation is ~2 ms (9 ms worst); keeping it out of the game step avoids hitches on slow phones.                    |
+| The rest-break card ignores blow-to-continue for 10 s; the calibration screen allows Back when opened from Settings                                     | Found in the self-review: a child still blowing skipped the break instantly; parents could not back out of recalibration. |
 
 ## Final self-review (spec 15.6)
 
@@ -152,3 +152,12 @@ Deviations from the spec, with reasons:
 7. **Splash doubles as the mic pre-explanation** (one tap instead of two).
 8. **Placeholders to replace before release**: Lucas & Friends character art, the `assetlinks.json` signing fingerprint, and the real hosting URL for `gen:qr` / the App Links intent filter.
 9. **Not a git repository**: the spec asks to commit the lockfile; `package-lock.json` exists but nothing was committed because the folder has no repo.
+
+## Changes requested after release testing
+
+| Change                                                                                                                       | Notes                                                                                                                                                                                                                                                                                                                                |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **All levels unlocked by default** (`settings.unlockAll`, default on; Settings › Accessibility & kids › "Unlock all levels") | Overrides spec 5.1's step-by-step unlocking by request. Progress, stars and coins are still recorded, so switching it off restores the 4-of-5 rule exactly. Older saves get the new default (on). The Daily course still follows _real_ progress (`unlockedWorldCount`), so Daily stays identical for everyone.                      |
+| **Parental gate is math only** (no 3-second hold)                                                                            | Overrides spec 7 by request. A wrong answer, Back or Esc closes the gate, so a child guessing gets one try per opening (1 in 3).                                                                                                                                                                                                     |
+| **"Try another way" shown by default** on the start screen, from the start of calibration, and on Mic Help                   | Overrides spec 3.4/9 (fallback after 3 failures, behind the gate) by request. It switches to tap & hold play without asking for the mic; the in-game prompt becomes "Tap and hold to fly!". Settings is still gated, and the tap/hum toggles inside it no longer ask a second time. Turning tap mode off in Settings starts the mic. |
+| Local Playwright runs use 2 workers (3 on CI)                                                                                | Fake-mic tests start one browser each; on an 8 GB machine with other apps open, 3 workers ran out of memory and crashed test tabs.                                                                                                                                                                                                   |

@@ -57,7 +57,7 @@ export function gameScreen(app: App, mode: CourseMode): Screen {
   const prompt = h('div', {
     class: 'big-prompt',
     'data-testid': 'blow-prompt',
-    text: t('game.blowToStart'),
+    text: t(app.store.data.settings.tapMode ? 'game.tapToStart' : 'game.blowToStart'),
   });
   s.el.append(canvas, hud, prompt);
 

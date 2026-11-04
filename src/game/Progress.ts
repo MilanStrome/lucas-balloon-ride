@@ -21,9 +21,14 @@ export function completedInWorld(p: Profile, world: number): number {
   return n;
 }
 
-export function isWorldUnlocked(p: Profile, world: number): boolean {
+/**
+ * `unlockAll` (the "Unlock all levels" setting, on by default) opens every world and level.
+ * Progress is still recorded, so turning it off falls back to step-by-step unlocking.
+ */
+export function isWorldUnlocked(p: Profile, world: number, unlockAll = false): boolean {
   if (world <= 1) return true;
   if (world > WORLDS) return false;
+  if (unlockAll) return true;
   return isWorldUnlocked(p, world - 1) && completedInWorld(p, world - 1) >= WORLD_UNLOCK_COUNT;
 }
 
@@ -33,9 +38,10 @@ export function unlockedWorldCount(p: Profile): number {
   return n;
 }
 
-export function isLevelUnlocked(p: Profile, id: string): boolean {
+export function isLevelUnlocked(p: Profile, id: string, unlockAll = false): boolean {
   const [w, l] = parseLevelId(id);
-  if (!isWorldUnlocked(p, w)) return false;
+  if (!isWorldUnlocked(p, w, unlockAll)) return false;
+  if (unlockAll) return l >= 1 && l <= LEVELS_PER_WORLD;
   return l === 1 || !!p.completed[levelId(w, l - 1)];
 }
 

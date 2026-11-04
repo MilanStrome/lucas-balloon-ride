@@ -4,7 +4,6 @@ import { Calibration } from '../../audio/Calibration';
 import type { Features } from '../../audio/features';
 import { button, h } from '../dom';
 import { t } from '../i18n';
-import { parentalGate } from '../ParentalGate';
 import type { Screen } from '../Router';
 import { balloonSvg, isLaptop, makeScreen, micHintSvg } from './common';
 
@@ -51,9 +50,22 @@ export function micCheckScreen(app: App, onDone: () => void): Screen {
     }
   };
 
+  // Always offered: kids who can't (or don't want to) blow can tap & hold instead.
+  const anotherWay = () =>
+    button(
+      { icon: 'person', label: t('check.fallback'), cls: 'secondary', testId: 'check-another-way' },
+      () => {
+        app.store.update((d) => {
+          d.settings.tapMode = true;
+        });
+        app.applySettings();
+        onDone();
+      },
+    );
+
   const begin = () => {
     guidance.hidden = true;
-    actions.replaceChildren();
+    actions.replaceChildren(anotherWay());
     title.textContent = t('check.quiet');
     bar.style.width = '0';
     cal.start(performance.now());
@@ -91,24 +103,7 @@ export function micCheckScreen(app: App, onDone: () => void): Screen {
         begin,
       ),
     );
-    if (cal.offerFallback) {
-      actions.append(
-        button(
-          { icon: 'lock', label: t('check.fallback'), cls: 'secondary', testId: 'check-fallback' },
-          () => {
-            void parentalGate(s.el).then((ok) => {
-              if (!ok) return;
-              app.store.update((d) => {
-                d.settings.tapMode = true;
-                d.settings.humMode = true;
-              });
-              app.applySettings();
-              onDone();
-            });
-          },
-        ),
-      );
-    }
+    actions.append(anotherWay());
   };
 
   s.enter = () => {

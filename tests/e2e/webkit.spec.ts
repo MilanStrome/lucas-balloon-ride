@@ -58,12 +58,10 @@ test('WebKit: layout and menus render; the AudioContext resume path works', asyn
   } else {
     // This WebKit build ships without Web Audio (Playwright on Windows): the game must still
     // boot, fall back to tap mode, and keep every menu working.
-    test
-      .info()
-      .annotations.push({
-        type: 'note',
-        description: 'WebKit build without Web Audio: resume path covered by manual Safari QA',
-      });
+    test.info().annotations.push({
+      type: 'note',
+      description: 'WebKit build without Web Audio: resume path covered by manual Safari QA',
+    });
     expect(await lbr<string>(page, 's.audioState')).toBe('none');
     await page.waitForTimeout(400);
     await page.getByTestId('menu-adventure').click();
