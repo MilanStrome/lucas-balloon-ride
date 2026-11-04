@@ -94,6 +94,8 @@ test('silence → balloon falls', async ({ baseURL }) => {
     await setIntensity(page, 0.3);
     await expect.poll(() => lbr<boolean>(page, 's.game.started')).toBe(true);
     await setIntensity(page, null);
+    // The scripted puff clears on the next frame; only then is the input really the silent mic.
+    await expect.poll(() => lbr<boolean>(page, 's.isBlowing')).toBe(false);
     const y0 = await lbr<number>(page, 's.game.y');
     const s = await sample(page, 1500);
     expect(s.some((x) => x.blowing)).toBe(false);
