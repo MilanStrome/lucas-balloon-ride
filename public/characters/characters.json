@@ -1,0 +1,8 @@
+[
+  { "id": "lucas", "label": "Lucas (placeholder)", "price": 0, "placeholder": { "body": "#ffb347", "accent": "#c96f00", "ears": "round" } },
+  { "id": "mia", "label": "Mia (placeholder)", "price": 30, "placeholder": { "body": "#ff8fb1", "accent": "#c94f77", "ears": "long" } },
+  { "id": "leo", "label": "Leo (placeholder)", "price": 40, "placeholder": { "body": "#ffd23f", "accent": "#b88f00", "ears": "pointy" } },
+  { "id": "zoe", "label": "Zoe (placeholder)", "price": 50, "placeholder": { "body": "#7bd36b", "accent": "#3f9a32", "ears": "none" } },
+  { "id": "pip", "label": "Pip the Penguin (placeholder)", "price": 0, "qrOnly": true, "placeholder": { "body": "#3a4a6b", "accent": "#ffffff", "ears": "none" } },
+  { "id": "sample-rider", "label": "Sample Rider (art slot demo)", "price": 60, "poses": { "idle": "idle.svg", "happy": "happy.svg", "hit": "hit.svg" } }
+]

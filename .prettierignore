@@ -1,0 +1,15 @@
+dist
+dist-e2e
+dist-prodcheck
+coverage
+android
+node_modules
+package-lock.json
+tests/fixtures
+src/game/levels/world-*.json
+GAME_SPEC.md
+public
+qr-codes
+test-results
+playwright-report
+tests/e2e/__screenshots__

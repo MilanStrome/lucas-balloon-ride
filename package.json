@@ -1,0 +1,52 @@
+{
+  "name": "lucas-balloon-ride",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsx scripts/validate-levels.ts && vite build",
+    "build:e2e": "vite build --mode e2e --outDir dist-e2e",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "test": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:levels": "vitest run --config vitest.levels.config.ts",
+    "gen:audio": "tsx scripts/gen-audio.ts",
+    "gen:levels": "tsx scripts/gen-levels.ts",
+    "gen:qr": "tsx scripts/gen-qr.ts",
+    "verify": "npm run typecheck && npm run lint && npm run test && npm run gen:audio && npm run test:e2e && npm run test:levels && npm run build && npm run test:lighthouse",
+    "android": "npm run build && npx cap sync android && npx cap open android",
+    "test:lighthouse": "tsx scripts/lighthouse.ts"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0",
+    "@eslint/js": "10.0.1",
+    "@fontsource/sn-pro": "5.3.0",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "@types/qrcode": "1.5.6",
+    "@vitest/coverage-v8": "5.1.0",
+    "chrome-launcher": "1.2.2",
+    "eslint": "10.14.0",
+    "globals": "17.14.0",
+    "lighthouse": "13.6.0",
+    "prettier": "3.9.10",
+    "qrcode": "1.5.4",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vite-plugin-pwa": "2.0.0",
+    "vitest": "5.1.0",
+    "workbox-window": "7.4.1"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.6.0",
+    "@capacitor/preferences": "8.0.1"
+  }
+}

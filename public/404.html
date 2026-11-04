@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Lucas' Balloon Ride</title>
+<script>
+  // GitHub Pages fallback: send unknown paths back to the app root, keeping ?unlock= codes.
+  (function () {
+    var parts = location.pathname.split('/').filter(Boolean);
+    var project = location.hostname.endsWith('github.io') && parts.length ? '/' + parts[0] + '/' : '/';
+    location.replace(location.origin + project + location.search + location.hash);
+  })();
+</script>
+</head>
+<body></body>
+</html>
